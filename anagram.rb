@@ -61,40 +61,44 @@ sortstring = string.split('').sort.join.squeeze
 		end
 		i+=1
 	end
-	puts missingchars.join
-	puts missingchars.length
+	# puts missingchars.join
+	# puts missingchars.length
 	return missingchars
 end
 
 findmissingchars("there is no cow level")
 
-
-# File.open("/usr/share/dict/words", "r") do |file|
-#   while line = file.gets
-#     word = line.chomp
-#     words[word.split('').sort!.join('')] += [word]
-#   end
+# def filetoarray
+# 	File.open("wordlist") do |f|
+# 		words = []
+# 		while line = f.gets
+# 			word=line.chomp
+# 			words = words.push(word)
+# 		end
+# 		puts words.length
+# 	end
 # end
 
-# File.open("word_hash", "w") do |file|
-#   Marshal.dump(words, file)
-# end
-# The second program loads the serialized hash from disk to solve anagrams that we type at the console:
+# filetoarray
 
-# words = nil
+def filetohash(dictionary)
+	words = Hash.new([])
+	File.open(dictionary) do |f|
+		puts words
+		while line = f.gets
+			word = line.chomp
+			thisword = { word.split('').sort!.join => word }
+			# thisword appears to correctly create a hash with a single key-value pair (tested with puts)
+			# h1.merge!(h2) { |key, v1, v2| [v1,v2] } by using an array construction as the argument for merge it seems to correctly sort rather than replace as usual
+			words.merge!(thisword) {|key, v1, v2|[v1,v2]}
+		end
+		# testing
+		puts words["ah"]
+		puts words["aemn"]
+		return words
+	end
+end
 
-# File.open("word_hash", "r") do |file|
-#   words = Marshal.load(file)
-# end
-
-# while true
-#   print "Enter word: "
-#   anagram = gets.chomp
-#   sorted_anagram = anagram.split('').sort!.join('')
-#   p  words[sorted_anagram]
-# end
-
-#import dictionary array instead of this
-dictionaryarray = ["lots", "of", "things"]
+filetohash("wordlist")
 
 
