@@ -1,10 +1,3 @@
-# psuedo
-
-# python method, checks for anagrams, deals with whitespaces in strings
-
-# def are_anagrams(s1, s2):
-#      return sorted(s1.replace(' ', '')) == sorted(s2.replace(' ', ''))
-
 def are_anagrams (s1,s2)
 	# add in case-sensitivity later
 	return s1.split('').sort.join == s2.split('').sort.join
@@ -37,21 +30,10 @@ else
 	puts "false"
 end
 
-# string = "there is no cow level"
-# sortstring = string.split('').sort.join
-# puts sortstring
-# puts sortstring.length
-# # .squeeze should remove duplicates
-# # e.g. ailnooprssttttuuwy -> ailnoprstuwy
-# puts sortstring.squeeze
-# puts sortstring.squeeze.length
-
-# normalchars = "abcdefghijklmnopqrstuvwxyz"
-# puts normalchars.length
-
-# ok so now that we have 13 vs. 26 characters we generate a function that will remove the duplicates
-def findmissingchars(string)
+# this is a function designed to see if there are any characters -not- included in our string that we can later use to reduce the size of the dictionary hash; this should make it easier to compare multi-word anagrams later
+def missing(string)
 normalchars = "abcdefghijklmnopqrstuvwxyz".split('')
+# .squeeze removes duplicate characters
 sortstring = string.split('').sort.join.squeeze
 	missingchars = []
 	i = 0
@@ -62,11 +44,9 @@ sortstring = string.split('').sort.join.squeeze
 		i+=1
 	end
 	# puts missingchars.join
-	# puts missingchars.length
 	return missingchars
 end
-
-findmissingchars("there is no cow level")
+missing("there is no cow level")
 
 # def filetoarray
 # 	File.open("wordlist") do |f|
@@ -79,12 +59,11 @@ findmissingchars("there is no cow level")
 # 	end
 # end
 
-# filetoarray
-
+# this is the core function that turns the dictionary into an sorted anagram hash
 def filetohash(dictionary)
 	words = Hash.new([])
 	File.open(dictionary) do |f|
-		puts words
+		# puts words
 		while line = f.gets
 			word = line.chomp
 			thisword = { word.split('').sort!.join => word }
@@ -93,12 +72,29 @@ def filetohash(dictionary)
 			words.merge!(thisword) {|key, v1, v2|[v1,v2]}
 		end
 		# testing
-		puts words["ah"]
-		puts words["aemn"]
+		# puts words["aemn"]
+		puts words.count
 		return words
 	end
 end
-
 filetohash("wordlist")
 
+# with our dictionary and anagram hash, we are now able to run the permutations. still, we'll want to really cut this number down.
 
+def reduction(string)
+	list = missing(string)
+	puts list.join
+	# for each key in words, 
+	h = filetohash("wordlist")
+	# iterates through the array elements, deletes keys that include characters not in the string
+	i = 0
+	while i<list.length
+		h.delete_if{|key, value| key.include?(list[i])}
+		i+=1
+	end
+	puts h.length
+	puts h["no"]
+	return h
+end
+
+reduction("there is no cow level")
