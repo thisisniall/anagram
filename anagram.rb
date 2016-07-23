@@ -73,7 +73,7 @@ def filetohash(dictionary)
 		end
 		# testing
 		# puts words["aemn"]
-		puts words.count
+		# puts "keys in hash: #{words.count}"
 		return words
 	end
 end
@@ -92,9 +92,49 @@ def reduction(string)
 		h.delete_if{|key, value| key.include?(list[i])}
 		i+=1
 	end
-	puts h.length
-	puts h["no"]
+	## testing
+	# puts h
+	# puts "keys in hash: #{h.length}"
 	return h
 end
 
 reduction("there is no cow level")
+
+
+#this is a partially-working method for two word combinations.
+
+# the values associated with the keys still need to be properly extracted and stored into a format that allows people to see plausible options. e.g. using "blue mean" i should get some kind of output that saves possible output combinations (name blue, blue name, mean blue, name lube) etc.
+
+# right now it uses a double-loop structure to look for 2-word combinations, but i would need a triple-loop structure to look for 3-word combinations, etc. what i would like to do is make it somehow recursive or use an internal helper function so that i could add "maximum number of words" as an additional argument. this would make testing for 3 and 4-word anagrams significantly easier.
+
+# more importantly that the current construction is only using keys - i need to extract and save the values related to those keys somehow for each match - perhaps for each match generating an array with all values
+
+def permutations(string)
+	h = reduction(string)
+	var = h.keys
+	# print var
+	match = 0
+	n = 0
+	while n < var.length
+		# setting i to n means that if there are say 3000 keys after the reduction, the inner loop will run 3000 times the first time, then 2999 times, etc. this prevents us from running the same thing twice and restricts us to unique matches (previous construction used an exterior each loop which resulted in duplication)
+		i = n
+		while i < var.length
+			# preliminary length check
+			if var[n].length+var[i].length == string.length
+				# test, not recommended for actual-length
+				# puts "length match at x: #{x} i: #{var[i]}"
+				if are_anagrams((var[n]+var[i]),string)
+					puts "#{var[n]+var[i]}: these could be an anagram for the entered string!"
+					match +=1
+				end
+			end
+			i+=1
+		end
+		n+=1
+	end
+	puts "total number of possible matches: #{match}"
+end
+
+# notes: current algorithm
+
+permutations("name")
